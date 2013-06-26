@@ -1,0 +1,24 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title></title>
+        <script>
+            function onSel(event)
+            {
+                var select = event.target;
+                var newUrl = select.options[select.selectedIndex].value;
+                WinJS.Navigation.navigate(newUrl);
+            }
+        </script>
+    </head>
+    <body>
+        <span>PayPal Checkout SDK</span>
+        <span style="float: right;">
+            <select id="modeSelect" onchange="javascript: onSel(event);">            
+                <option value="../html/PizzaCSharp.html">Direct C# Integration</option>
+                <option value="../html/PizzaJavaScript.html">JavaScript wrapper Integration</option>
+            </select>
+        </span>
+    </body>
+</html>
+

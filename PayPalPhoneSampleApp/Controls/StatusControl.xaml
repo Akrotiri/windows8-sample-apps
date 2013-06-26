@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="PayPal.Sample.Phone.Controls.StatusControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    d:DesignHeight="0" d:DesignWidth="475">
+	<UserControl.Resources>
+		<Storyboard x:Name="displayStoryboard">
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="OuterGrid">
+                <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{Binding DisplayedVisibility}"/>
+            </ObjectAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="OuterGrid">
+				<EasingDoubleKeyFrame KeyTime="0:0:1" Value="0.8"/>
+				<EasingDoubleKeyFrame KeyTime="0:0:2" Value="0.6"/>
+				<EasingDoubleKeyFrame KeyTime="0:0:3" Value="0.4"/>
+				<EasingDoubleKeyFrame KeyTime="0:0:4" Value="0.2"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:5" Value="0.0"/>
+			</DoubleAnimationUsingKeyFrames>            
+        </Storyboard>
+	</UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot">
+    	<Grid x:Name="OuterGrid" Background="Transparent" VerticalAlignment="Bottom" Visibility="Collapsed">
+    		<Grid.RowDefinitions>
+    			<RowDefinition Height="Auto"/>
+    			<RowDefinition Height="20"/>
+    		</Grid.RowDefinitions>
+    		<Rectangle x:Name="Container" Stroke="Black" StrokeThickness="0" Fill="#FF9BE6FF" RadiusX="5" RadiusY="5"/>
+    		<TextBox x:Name="Message" TextWrapping="Wrap" AcceptsReturn="True" 
+    			Grid.Row="0" Background="{x:Null}" BorderThickness="0" FontSize="16"/>
+    		<Path Fill="#FF9BE6FF" Stretch="Fill" Stroke="#FF000000" Data="M65,81.5 L65,101.82753 L45,81.5 C45,81.5 65,81.5 65,81.5 z" Margin="0,0,16,0" UseLayoutRounding="False" HorizontalAlignment="Right" Width="26.083" StrokeThickness="0" Grid.Row="1"/>
+    	</Grid>
+    </Grid>
+</UserControl>

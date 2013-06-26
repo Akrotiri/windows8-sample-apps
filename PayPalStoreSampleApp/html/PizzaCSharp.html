@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title></title>
+        <link rel="stylesheet" href="/css/Pizza.css" />
+        <script src="/js/PizzaData.js"></script>
+        <script src="/js/PizzaCSharp.js"></script>
+        <script>
+            //BuyNow handler.
+            function makePayment(event)
+            {
+                //This sample shows how you can use the C# WinRT API from JavaScript.
+                //Please refer to http://paypal.github.io/Windows8SDK/javascript.html for more.
+
+                //Create a BuyNow object.
+                var merchantId = "enduser_biz@gmail.com";
+                var buyNow = new PayPal.Checkout.BuyNow(merchantId);
+
+                //Set integration mode. Defaults to live.
+                buyNow.useSandbox = true;
+
+                //Set currency. Defaults to USD.
+                buyNow.currency = "USD";
+
+                //Set locale for PayPal pages.
+                buyNow.locale = "fr_FR";
+
+                //Payment method can be either CreditCard/PayPal. Defaults to PayPal.
+                buyNow.paymentMethod = PayPal.Checkout.PaymentMethod.creditCard;
+
+                //Attach event handlers.
+                buyNow.addEventListener
+                (
+                    "start", function (e)
+                    {
+                        document.getElementById("status").textContent = "Starting Payment";
+                    }
+                );
+                buyNow.addEventListener
+                (
+                    "auth", function (e)
+                    {
+                        document.getElementById("status").textContent = "Beginning Authentication - Token: " + e.token;
+                    }
+                );
+                buyNow.addEventListener
+                (
+                    "cancel", function (e)
+                    {
+                        document.getElementById("status").textContent = "User Cancelled Payment - Token: " + e.token;
+                    }
+                );
+                buyNow.addEventListener
+                (
+                    "complete", function (e)
+                    {
+                        document.getElementById("status").textContent = "Payment Complete - Token: " + e.token + " - Transaction ID: " + e.transactionID;
+                    }
+                );
+                buyNow.addEventListener
+                (
+                    "error", function (e)
+                    {
+                        document.getElementById("status").textContent = "Error: " + e.message;
+                    }
+                );
+
+                //Set items on BuyNow based on user selection and execute payment.
+                var selection = document.querySelector("#divListViewPizza").winControl.selection.getItems().done
+                (
+                    function (currentSelection)
+                    {
+                        currentSelection.forEach
+                        (
+                            function (selectedItem)
+                            {
+                                buyNow.addItem
+                                (
+                                    new PayPal.Checkout.ItemBuilder(selectedItem.data.title)
+                                    .id(selectedItem.data.itemId)
+                                    .description(selectedItem.data.desc)
+                                    .price(selectedItem.data.price)
+                                    .quantity(1)
+                                    .build()
+                                );
+                            }
+                        );
+
+                        buyNow.execute().then
+                        (
+                            function onComplete(result)
+                            {
+                                //Do something with boolean result.
+                                //execute() returns false only if an error was encountered in executing payment. 
+                                //You can also catch this with a "Error" event handler as shown above.
+                            }
+                        );
+                    }
+                );
+            }
+        </script>
+    </head>
+    <body style="width: auto; height: auto;">
+        <div data-win-control="PayPalCheckoutSDK" style="width: auto; height:auto;">
+            <form id="dataForm" style="width: auto; height: auto;">
+            <div id="status"></div>
+            <label>Choose from our mouth watering range</label>
+            <br />
+            <div id="menuItemTemplate" data-win-control="WinJS.Binding.Template" style="display: none">
+                <div class="menuListIconTextItem">
+                    <img src="#" class="menuListIconTextItem-Image" data-win-bind="src: picture" />
+                    <div class="menuListIconTextItem-Detail">
+                        <h4 data-win-bind="innerText: title"></h4>
+                        <h6 data-win-bind="innerText: price" class="currency"></h6>
+                    </div>
+                </div>
+            </div>
+            <div id="divListView" style="width: auto; height: auto;">
+                <div id="divListViewPizza"
+                    class="win-selectionstylefilled"
+                    data-win-control="WinJS.UI.ListView"
+                    data-win-options=
+                    "{
+                        itemDataSource: menuData.dataSource,
+                        itemTemplate: menuItemTemplate,
+                        selectionMode: 'multi',
+                        swipeBehavior: 'multi',
+                        tapBehavior: 'toggleSelect',
+                        layout: { type: WinJS.UI.ListLayout }
+                    }"
+                ></div>
+
+                <div data-win-control="DetailPane" style="width: 70%; position: relative;">
+                    <div style="position: absolute; top: 5px; right: 10px; font-size: 14px">
+                        <b>Order Total:</b> 
+                        <span id="spanOrderTotal" class="currency">0.0</span>
+                    </div>
+                    <div>
+                        <img id="imgSplash" src="../images/Splash.png" />
+                    </div>
+                    <div style="position: absolute; bottom: 5px; right: 10px;">
+                        <!--Please note to stop propagation of the submit event by returning false.-->
+                        <button id="buttonBuyNow" class="action" onclick="makePayment(event); return false;">Buy Now</button>
+                    </div>
+                </div>
+            </div>
+            </form>
+        </div>
+    </body>
+</html>
